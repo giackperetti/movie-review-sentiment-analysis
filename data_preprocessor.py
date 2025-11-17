@@ -1,30 +1,14 @@
 import os
 import re
-import string
-from nltk.corpus import stopwords
-from nltk.stem import WordNetLemmatizer
 from typing import List, Dict, Union
 
 
 def clean_text(text: str) -> str:
-    """Performs standard text cleaning operations and lemmatization."""
-    lemmatizer = WordNetLemmatizer()
-
     text = text.lower()
-    text = re.sub(r"\[.*?\]", "", text)
-    text = re.sub(f"[{re.escape(string.punctuation)}]", "", text)
-    text = re.sub(r"\w*\d\w*", "", text)
+    text = re.sub(r"[^a-zA-Z0-9\s!?.,']", "", text)
     text = re.sub(r"\s+", " ", text).strip()
 
-    stop_words = set(stopwords.words("english"))
-
-    words = [
-        lemmatizer.lemmatize(word, pos="v")
-        for word in text.split()
-        if word not in stop_words
-    ]
-
-    return " ".join(words)
+    return text
 
 
 def load_and_clean_reviews(base_dir: str) -> List[Dict[str, Union[str, int]]]:
